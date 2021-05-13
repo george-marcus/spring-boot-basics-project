@@ -60,16 +60,18 @@ public class NotesTab {
         notesTabLink.click();
     }
 
-    public void newNote(String title, String description) {
+    public void newNote(String title, String description) throws InterruptedException {
         wait.until(ExpectedConditions
                 .elementToBeClickable(addNoteButton));
 
         addNoteButton.click();
 
+        Thread.sleep(500);
+
         populateNote(title, description);
     }
 
-    public boolean editNote(int index, String newTitle, String newDescription)  {
+    public boolean editNote(int index, String newTitle, String newDescription) throws InterruptedException {
 
         if(noteEdit.size() <= index){
             return false;
@@ -79,6 +81,8 @@ public class NotesTab {
                 .elementToBeClickable(noteEdit.get(index)));
 
         noteEdit.get(index).click();
+
+        Thread.sleep(500);
 
         populateNote(newTitle, newDescription);
 
@@ -103,6 +107,8 @@ public class NotesTab {
     }
 
     private void populateNote(String title, String description) {
+        wait.until(ExpectedConditions
+                .elementToBeClickable(noteSubmitButton));
 
         wait.until(ExpectedConditions
                 .elementToBeClickable(noteSubmitButton));

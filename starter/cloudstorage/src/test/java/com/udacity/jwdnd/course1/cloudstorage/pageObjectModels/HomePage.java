@@ -13,7 +13,21 @@ public class HomePage {
     @FindBy(className = "logout")
     private WebElement logoutButton;
 
+    private final WebDriverWait wait;
+
+    public HomePage(final WebDriver driver){
+        this.wait = new WebDriverWait(driver, 60);
+
+        wait.until(ExpectedConditions
+                .presenceOfElementLocated(By.className("logout")));
+
+        PageFactory.initElements(driver, this);
+    }
     public void logout() {
+
+        wait.until(ExpectedConditions
+                .elementToBeClickable(logoutButton));
+
         logoutButton.click();
     }
 }

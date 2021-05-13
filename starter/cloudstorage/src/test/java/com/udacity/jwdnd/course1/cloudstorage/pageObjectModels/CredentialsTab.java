@@ -65,22 +65,29 @@ public class CredentialsTab {
         credentialsTabLink.click();
     }
 
-    public void newCredential(String url, String username, String password) {
+    public void newCredential(String url, String username, String password) throws InterruptedException {
         wait.until(ExpectedConditions
                 .elementToBeClickable(addCredentialButton));
 
         addCredentialButton.click();
 
+        Thread.sleep(500);
+
         populateCredential(url, username, password);
 
     }
 
-    public boolean editCredential(int index, String newUrl, String newUsername, String newPassword){
-        if(editCredentialButton.size() <= index)
+    public boolean editCredential(int index, String newUrl, String newUsername, String newPassword) throws InterruptedException {
+        if(editCredentialButton.size() <= index){
             return false;
-        wait.until(ExpectedConditions.elementToBeClickable(editCredentialButton.get(index)));
+        }
+
+        wait.until(ExpectedConditions
+                .elementToBeClickable(editCredentialButton.get(index)));
 
         editCredentialButton.get(index).click();
+
+        Thread.sleep(500);
 
         populateCredential(newUrl, newUsername, newPassword);
 
@@ -110,6 +117,9 @@ public class CredentialsTab {
     }
 
     private void populateCredential(String url, String username, String password) {
+        wait.until(ExpectedConditions
+                .elementToBeClickable(saveCredentialButton));
+
         urlInput.clear();
         urlInput.sendKeys(url);
 

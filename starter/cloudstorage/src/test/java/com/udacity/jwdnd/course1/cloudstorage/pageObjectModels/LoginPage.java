@@ -49,6 +49,10 @@ public class LoginPage {
     }
 
     public Boolean hasErrorLoggingIn(){
+
+        wait.until(ExpectedConditions
+                .elementToBeClickable(loginError));
+
         return loginError.isDisplayed();
     }
 }

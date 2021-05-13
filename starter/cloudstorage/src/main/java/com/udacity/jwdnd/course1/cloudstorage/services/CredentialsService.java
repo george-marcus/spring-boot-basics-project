@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialsMapper;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Credential;
-
-import com.udacity.jwdnd.course1.cloudstorage.viewModels.CredentialViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +21,16 @@ public class CredentialsService {
     @Autowired
     private EncryptionService encryptionService;
 
-    public void saveCredential(final CredentialViewModel credentialViewModel, final String username) throws IOException {
+    public void saveCredential(final Credential credential, final String username) throws IOException {
 
         int userid = userService.getUser(username).getUserid();
 
         String key = encryptionService.generateNewKey();
-        String encryptedPassword = encryptionService.encryptValue(credentialViewModel.getPassword(), key);
+        String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), key);
 
-        Credential credential
-             = new Credential(credentialViewModel.getCredentialId(), credentialViewModel.getUrl(), credentialViewModel.getUsername(),
-                              key, encryptedPassword, userid);
+        credential.setPassword(encryptedPassword);
+        credential.setKey(key);
+        credential.setUserid(userid);
 
         int credentialId = 0;
 
@@ -53,31 +51,30 @@ public class CredentialsService {
         credentialsMapper.delete(credentialId, userid);
     }
 
-    public List<CredentialViewModel> getAllCredentialsByUser(String userName) {
+    public List<Credential> getAllCredentialsByUser(String userName) {
 
         int userid = userService.getUser(userName).getUserid();
         List<Credential> credentialList = credentialsMapper.getCredentialsByUserId(userid);
-        List<CredentialViewModel> cFormList = new ArrayList<CredentialViewModel>();
         for(Credential credential : credentialList) {
             String decryptedPassword = encryptionService
                     .decryptValue(credential.getPassword(), credential.getKey());
-            CredentialViewModel cForm = new CredentialViewModel(credential.getCredentialId(), credential.getUrl(),
-                    credential.getUsername(), decryptedPassword, credential.getPassword());
-            cFormList.add(cForm);
+
+            credential.setPassword(decryptedPassword);
+
         }
-        return cFormList;
+        return credentialList;
     }
 
-    public boolean isDuplicate(CredentialViewModel credentialViewModel, String username) {
-        if(credentialViewModel.getUrl() == null || credentialViewModel.getUrl().isBlank() ||
-                credentialViewModel.getUsername() == null || credentialViewModel.getUsername().isBlank() ||
-                credentialViewModel.getPassword() == null || credentialViewModel.getPassword().isBlank())   {
+    public boolean isDuplicate(Credential credential, String username) {
+        if(credential.getUrl() == null || credential.getUrl().isBlank() ||
+                credential.getUsername() == null || credential.getUsername().isBlank() ||
+                credential.getPassword() == null || credential.getPassword().isBlank())   {
             return false;
         }
 
         int userid = userService.getUser(username).getUserid();
 
-        return credentialsMapper.hasDuplicateUrl(credentialViewModel.getUrl(), credentialViewModel.getUsername(),
-                credentialViewModel.getCredentialId(), userid);
+        return credentialsMapper.hasDuplicateUrl(credential.getUrl(), credential.getUsername(),
+                credential.getCredentialId(), userid);
     }
 }

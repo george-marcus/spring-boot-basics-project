@@ -50,7 +50,7 @@ class CloudStorageApplicationTests {
 
 	//Authentication And Authorization
 	@Test
-	public void getLoginPage() throws InterruptedException {
+	public void testSignupLoginLogoutFlow() throws InterruptedException {
 		driver.get(baseURL + "/signup");
 		SignupPage signupPage = new SignupPage(driver);
 		signupPage.signup("George", "Marcus", username, password);
@@ -62,6 +62,15 @@ class CloudStorageApplicationTests {
 		loginPage.login(username, password);
 
 		assertEquals(baseURL + "/home", driver.getCurrentUrl());
+
+		HomePage homePage = new HomePage(driver);
+		homePage.logout();
+
+		Thread.sleep(1000);
+
+		driver.get(baseURL + "/home");
+		assertEquals(baseURL + "/login", driver.getCurrentUrl());
+
 	}
 
 	@Test

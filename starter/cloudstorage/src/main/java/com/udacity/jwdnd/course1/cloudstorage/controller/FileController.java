@@ -3,12 +3,11 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import java.io.IOException;
 
 import com.udacity.jwdnd.course1.cloudstorage.dto.RedirectionModel;
+import com.udacity.jwdnd.course1.cloudstorage.entity.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.entity.FileInfo;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Note;
 import com.udacity.jwdnd.course1.cloudstorage.enums.ActiveTab;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
-
-import com.udacity.jwdnd.course1.cloudstorage.viewModels.CredentialViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,14 +30,23 @@ public class FileController extends BaseController {
     @PostMapping("/file-upload")
     public String postFileUpload(Authentication authentication,
                                  @ModelAttribute("noteModal") Note note,
-                                 @ModelAttribute("credentialModal") CredentialViewModel credential,
+                                 @ModelAttribute("credentialModal") Credential credential,
                                  @RequestParam("fileUpload") MultipartFile fileUpload,
                                  Model model) {
 
         RedirectionModel redirectionModel = new RedirectionModel(model,true,
                 "uploadSuccess", authentication.getName(), ActiveTab.Files);
 
-        if(fileUpload.getOriginalFilename() == null || fileUpload.getOriginalFilename().isBlank()) {
+        double fileSizeInMB = fileUpload.getSize() * 0.00000095367432;
+
+        if(fileSizeInMB > 10){
+            redirectionModel.setAttribute("uploadError");
+            redirectionModel.setValue("File Size is too large");
+
+            return RedirectHomeWithValue(redirectionModel);
+        }
+
+        if(fileUpload.getOriginalFilename() == null || fileUpload.getOriginalFilename().isBlank() || fileUpload.isEmpty()) {
 
             redirectionModel.setAttribute("uploadError");
             redirectionModel.setValue("Please select a file!");
@@ -72,7 +80,7 @@ public class FileController extends BaseController {
     @GetMapping("/file-delete")
     public String deleteFile(Authentication authentication,
                                 @ModelAttribute("noteModal") Note note,
-                                @ModelAttribute("credentialModal") CredentialViewModel credential,
+                                @ModelAttribute("credentialModal") Credential credential,
                                 @RequestParam("fileId") Integer fileId, Model model) {
 
         RedirectionModel redirectionModel = new RedirectionModel(model,true,
@@ -87,7 +95,7 @@ public class FileController extends BaseController {
     @GetMapping("/file-download")
     public ResponseEntity<byte[]> downloadFile(Authentication authentication,
                                                @ModelAttribute("noteModal") Note note,
-                                               @ModelAttribute("credentialModal") CredentialViewModel credential,
+                                               @ModelAttribute("credentialModal") Credential credential,
                                                @RequestParam("fileId") Integer fileId) throws IOException {
 
         FileInfo file = fileService.downloadFile(fileId, authentication.getName());

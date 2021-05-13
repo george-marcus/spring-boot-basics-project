@@ -3,9 +3,9 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import java.io.IOException;
 
 import com.udacity.jwdnd.course1.cloudstorage.dto.RedirectionModel;
+import com.udacity.jwdnd.course1.cloudstorage.entity.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Note;
 import com.udacity.jwdnd.course1.cloudstorage.enums.ActiveTab;
-import com.udacity.jwdnd.course1.cloudstorage.viewModels.CredentialViewModel;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,7 @@ public class CredentialsController extends BaseController {
     @PostMapping("/save-credential")
     public String saveCredential(Authentication authentication,
                                      @ModelAttribute("noteModal") Note note,
-                                     @ModelAttribute("credentialModal") CredentialViewModel credential,
+                                     @ModelAttribute("credentialModal") Credential credential,
                                      Model model) {
 
         RedirectionModel redirectionModel = new RedirectionModel(model,true,
@@ -50,7 +50,7 @@ public class CredentialsController extends BaseController {
     @GetMapping("/delete-credential")
     public String deleteCredential(Authentication authentication,
                                       @ModelAttribute("noteModal") Note note,
-                                      @ModelAttribute("credentialModal") CredentialViewModel credential,
+                                      @ModelAttribute("credentialModal") Credential credential,
                                       @RequestParam("credentialId") Integer credentialId,
                                       Model model) {
 

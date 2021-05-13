@@ -3,7 +3,6 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Note;
 import com.udacity.jwdnd.course1.cloudstorage.enums.ActiveTab;
-import com.udacity.jwdnd.course1.cloudstorage.viewModels.CredentialViewModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +21,5 @@ public class HomeController extends BaseController {
 
         populateTabModelAttributes(model, authentication.getName(), ActiveTab.Files);
         return "home";
-    }
-
-    @GetMapping("/error")
-    public String getError() {
-        return "error";
     }
 }

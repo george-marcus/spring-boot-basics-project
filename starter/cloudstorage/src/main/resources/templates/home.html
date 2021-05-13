@@ -199,7 +199,7 @@
                                 <tr th:each="credential : ${credentials}">
                                     <td>
                                         <button type="button" class="btn btn-success" id="edit-credential"
-                                                th:attr="data-Id=${credential.credentialId},
+                                                th:attr="data-id=${credential.credentialId},
                                                          data-username=${credential.username},
                                                          data-password=${credential.password},
                                                          data-url=${credential.url}"
@@ -213,7 +213,7 @@
                                     </td>
                                     <th scope="row" id="credential-url" th:text="${credential.url}"></th>
                                     <td id="credential-username" th:text="${credential.username}"></td>
-                                    <td id="credential-password" th:text="${credential.encryptedPassword}"></td>
+                                    <td id="credential-password" th:text="${credential.password}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -275,9 +275,9 @@
             // For opening the credentials modal
             function showCredentialModal(credentialId, url, username, password) {
                 $('#credentialId').val(credentialId ? credentialId : '');
-                $('#credentialUrl').val(url ? url : '');
-                $('#credentialUsername').val(username ? username : '');
-                $('#credentialPassword').val(password ? password : '');
+                $('#url').val(url ? url : '');
+                $('#username').val(username ? username : '');
+                $('#password').val(password ? password : '');
                 $('#credentialModal').modal('show');
             }
         </script>

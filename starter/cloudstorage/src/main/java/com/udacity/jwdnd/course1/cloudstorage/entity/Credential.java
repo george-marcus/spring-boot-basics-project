@@ -8,6 +8,8 @@ public class Credential {
     private String password;
     private Integer userid;
 
+    public  Credential(){}
+
     public Credential(Integer credentialId, String url, String username, String key, String password, Integer userid) {
         this.credentialId = credentialId;
         this.url = url;
@@ -65,4 +67,14 @@ public class Credential {
         this.userid = userid;
     }
 
+    public Credential populateCredential(Credential otherCredential){
+        credentialId = otherCredential.credentialId;
+        url = otherCredential.url;
+        username = otherCredential.username;
+        key = otherCredential.key;
+        password = otherCredential.password;
+        userid = otherCredential.userid;
+
+        return this;
+    }
 }
