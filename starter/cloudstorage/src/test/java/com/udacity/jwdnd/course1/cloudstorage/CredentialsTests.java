@@ -41,14 +41,6 @@ class CredentialsTests {
 	public void beforeEach() throws InterruptedException {
 		driver = new ChromeDriver();
 		baseURL = "http://localhost:" + port;
-
-		driver.get(baseURL + "/signup");
-		SignupPage signupPage = new SignupPage(driver);
-		signupPage.signup("George", "Marcus", username, password);
-
-		LoginPage loginPage = new LoginPage(driver);
-		loginPage.login(username, password);
-		loginPage.login(username, password);
 	}
 
 	@AfterEach
@@ -59,35 +51,68 @@ class CredentialsTests {
 	}
 
 	@Test
-	public void credentialOperations() throws InterruptedException {
+	public void createCredential() throws InterruptedException {
+
+		signUpAndLogin("create-credential-username", "create-credential-password");
+
 		CredentialsTab credentialsTab = new CredentialsTab(driver);
 
 		credentialsTab.showCredentials();
-
-		Thread.sleep(1000);
-
 		credentialsTab.newCredential(url, username, password);
 
-		int credentialListSize = credentialsTab.getCredentialListSize();
-		assertEquals(1, credentialListSize);
-
 		Thread.sleep(1000);
+
+		int credentials = credentialsTab.getCredentialListSize();
+		assertEquals(1, credentials);
+	}
+
+	@Test
+	public void editCredential() throws InterruptedException {
+
+		signUpAndLogin("edit-credential-username", "edit-credential-password");
 
 		String newUrl = "new url";
 		String newUsername = "new username";
 		String newPassword = "new password";
 
-		assertTrue(credentialsTab.editCredential(0, newUrl, newUsername, newPassword));
-
-		credentialListSize = credentialsTab.getCredentialListSize();
-		assertEquals(1, credentialListSize);
+		CredentialsTab credentialsTab = new CredentialsTab(driver);
+		credentialsTab.showCredentials();
+		credentialsTab.newCredential(url, username, password);
 
 		Thread.sleep(1000);
 
-		assertTrue(credentialsTab.deleteCredential(0));
+		assertTrue(credentialsTab.editCredential(0, newUrl, newUsername, newPassword));
+
+		Thread.sleep(1000);
 
 		int credentials = credentialsTab.getCredentialListSize();
-		assertEquals(0, credentials);
+		assertEquals(1, credentials);
+	}
 
+	@Test
+	public void deleteCredential() throws InterruptedException {
+
+		signUpAndLogin("delete-credential-username", "delete-credential-password");
+
+		CredentialsTab credentialsTab = new CredentialsTab(driver);
+		credentialsTab.showCredentials();
+		credentialsTab.newCredential(url, username, password);
+
+		Thread.sleep(1000);
+		assertTrue(credentialsTab.deleteCredential(0));
+
+		Thread.sleep(1000);
+		int credentials = credentialsTab.getCredentialListSize();
+		assertEquals(0, credentials);
+	}
+
+	private void signUpAndLogin(String username, String password){
+		driver.get(baseURL + "/signup");
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.signup("George", "Marcus", username, password);
+
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login(username, password);
+		loginPage.login(username, password);
 	}
 }

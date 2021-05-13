@@ -27,9 +27,6 @@ class NotesTests {
 
 	private WebDriver driver;
 
-	private static final String username = "username-notes";
-	private static final String password = "password-notes";
-
 	private static final String title = "Title";
 	private static final String description = "description";
 
@@ -43,13 +40,7 @@ class NotesTests {
 		driver = new ChromeDriver();
 		baseURL = "http://localhost:" + port;
 
-		driver.get(baseURL + "/signup");
-		SignupPage signupPage = new SignupPage(driver);
-		signupPage.signup("George", "Marcus", username, password);
 
-		LoginPage loginPage = new LoginPage(driver);
-		loginPage.login(username, password);
-		loginPage.login(username, password);
 	}
 
 	@AfterEach
@@ -60,7 +51,8 @@ class NotesTests {
 	}
 
 	@Test
-	public void noteOperations() throws InterruptedException {
+	public void createNote() throws InterruptedException {
+		signUpAndLogin("create-note-username", "create-note-password");
 		NotesTab notesTab = new NotesTab(driver);
 
 		notesTab.showNotes();
@@ -70,23 +62,55 @@ class NotesTests {
 
 		int noteSize = notesTab.getNoteListSize();
 		assertEquals(1, noteSize);
+	}
+
+	@Test
+	public void editNote() throws InterruptedException {
+		signUpAndLogin("edit-note-username", "edit-note-password");
 
 		String newTitle = "New Title";
 		String newDescription = "New Description";
+
+		NotesTab notesTab = new NotesTab(driver);
+		notesTab.showNotes();
+		notesTab.newNote(title, description);
+
+		Thread.sleep(1000);
 
 		assertTrue(notesTab.editNote(0, newTitle, newDescription));
 
 		Thread.sleep(1000);
 
-		noteSize = notesTab.getNoteListSize();
+		int noteSize = notesTab.getNoteListSize();
 		assertEquals(1, noteSize);
+	}
+
+	@Test
+	public void deleteNote() throws InterruptedException {
+
+		signUpAndLogin("delete-note-username", "delete-note-password");
+
+		NotesTab notesTab = new NotesTab(driver);
+		notesTab.showNotes();
+		notesTab.newNote(title, description);
 
 		assertTrue(notesTab.deleteNote(0));
 
 		Thread.sleep(1000);
 
-		noteSize = notesTab.getNoteListSize();
-		assertEquals(0, noteSize);
+		int noteSize = notesTab.getNoteListSize();
 
+		assertEquals(0, noteSize);
 	}
+
+	private void signUpAndLogin(String username, String password){
+		driver.get(baseURL + "/signup");
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.signup("George", "Marcus", username, password);
+
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login(username, password);
+		loginPage.login(username, password);
+	}
+
 }
