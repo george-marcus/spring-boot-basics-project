@@ -24,5 +24,8 @@ public class HomeController extends BaseController {
         return "home";
     }
 
-
+    @GetMapping("/error")
+    public String getError() {
+        return "error";
+    }
 }
