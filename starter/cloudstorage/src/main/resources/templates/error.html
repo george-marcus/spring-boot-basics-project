@@ -12,7 +12,8 @@
         <div class="container justify-content-center w-50 p-3" style="margin-top: 5em;">
             <div class="alert alert-danger fill-parent">
                 <h1 class="display-5">Error</h1>
-                <span>An error occurred, please contact system admin</span>
+                <span th:text="${error}"></span>
+                <hr/>
                 <span>Click <a href="/home">here</a> to go back.</span>
             </div>
         </div>

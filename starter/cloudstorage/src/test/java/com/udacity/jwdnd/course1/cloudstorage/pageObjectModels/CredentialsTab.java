@@ -6,6 +6,7 @@ import java.util.List;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Credential;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -49,27 +50,22 @@ public class CredentialsTab {
     @FindBy(id="credential-password")
     private List<WebElement> credentialPassword;
 
-    private final WebDriverWait wait;
+    private final JavascriptExecutor javascriptExecutor;
 
     public CredentialsTab(final WebDriver driver) {
-        this.wait = new WebDriverWait(driver, 1000);
-
-        wait.until(ExpectedConditions
-                .presenceOfElementLocated(By.id("nav-credentials-tab")));
-
+        this.javascriptExecutor = (JavascriptExecutor)driver;
         PageFactory.initElements(driver, this);
     }
 
     public void showCredentials(){
-        wait.until(ExpectedConditions.elementToBeClickable(credentialsTabLink));
-        credentialsTabLink.click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", credentialsTabLink);
     }
 
     public void newCredential(String url, String username, String password) throws InterruptedException {
-        wait.until(ExpectedConditions
-                .elementToBeClickable(addCredentialButton));
 
-        addCredentialButton.click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", addCredentialButton);
 
         Thread.sleep(500);
 
@@ -82,16 +78,12 @@ public class CredentialsTab {
             return false;
         }
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(editCredentialButton.get(index)));
-
-        editCredentialButton.get(index).click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", editCredentialButton.get(index));
 
         Thread.sleep(500);
 
         populateCredential(newUrl, newUsername, newPassword);
-
-
 
         return true;
     }
@@ -104,10 +96,8 @@ public class CredentialsTab {
             return false;
         }
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(deleteCredentialButton.get(index)));
-
-        deleteCredentialButton.get(index).click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", deleteCredentialButton.get(index));
 
         return true;
     }
@@ -117,8 +107,6 @@ public class CredentialsTab {
     }
 
     private void populateCredential(String url, String username, String password) {
-        wait.until(ExpectedConditions
-                .elementToBeClickable(saveCredentialButton));
 
         urlInput.clear();
         urlInput.sendKeys(url);
@@ -129,7 +117,8 @@ public class CredentialsTab {
         passwordInput.clear();
         passwordInput.sendKeys(password);
 
-        saveCredentialButton.click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", saveCredentialButton);
     }
 
 }

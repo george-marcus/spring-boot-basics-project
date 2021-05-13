@@ -6,6 +6,7 @@ import java.util.List;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Note;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -43,28 +44,21 @@ public class NotesTab {
     @FindBy(id="note-description")
     private List<WebElement> noteDescription;
 
-    private final WebDriverWait wait;
+    private final JavascriptExecutor javascriptExecutor;
 
     public NotesTab(final WebDriver driver) {
-        this.wait = new WebDriverWait(driver, 1000);
-
-        wait.until(ExpectedConditions
-                .presenceOfElementLocated(By.id("nav-notes-tab")));
-
+        this.javascriptExecutor = (JavascriptExecutor)driver;
         PageFactory.initElements(driver, this);
     }
 
     public void showNotes() {
-        wait.until(ExpectedConditions
-                .elementToBeClickable(notesTabLink));
-        notesTabLink.click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", notesTabLink);
     }
 
     public void newNote(String title, String description) throws InterruptedException {
-        wait.until(ExpectedConditions
-                .elementToBeClickable(addNoteButton));
-
-        addNoteButton.click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", addNoteButton);
 
         Thread.sleep(500);
 
@@ -77,10 +71,8 @@ public class NotesTab {
             return false;
         }
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(noteEdit.get(index)));
-
-        noteEdit.get(index).click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", noteEdit.get(index));
 
         Thread.sleep(500);
 
@@ -94,10 +86,8 @@ public class NotesTab {
             return false;
         }
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(noteDelete.get(index)));
-
-        noteDelete.get(index).click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", noteDelete.get(index));
 
         return true;
     }
@@ -107,19 +97,15 @@ public class NotesTab {
     }
 
     private void populateNote(String title, String description) {
-        wait.until(ExpectedConditions
-                .elementToBeClickable(noteSubmitButton));
-
-        wait.until(ExpectedConditions
-                .elementToBeClickable(noteSubmitButton));
-
         titleInput.clear();
         titleInput.sendKeys(title);
 
         descriptionInput.clear();
         descriptionInput.sendKeys(description);
 
-        noteSubmitButton.click();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", noteSubmitButton);
+
     }
 
 

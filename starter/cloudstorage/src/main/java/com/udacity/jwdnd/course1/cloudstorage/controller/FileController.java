@@ -39,7 +39,7 @@ public class FileController extends BaseController {
 
         double fileSizeInMB = fileUpload.getSize() * 0.00000095367432;
 
-        if(fileSizeInMB > 10){
+        if(fileSizeInMB > 8){
             redirectionModel.setAttribute("uploadError");
             redirectionModel.setValue("File Size is too large");
 

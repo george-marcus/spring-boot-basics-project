@@ -24,13 +24,13 @@ public class CredentialsService {
     public void saveCredential(final Credential credential, final String username) throws IOException {
 
         int userid = userService.getUser(username).getUserid();
+        credential.setUserid(userid);
 
         String key = encryptionService.generateNewKey();
         String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), key);
 
         credential.setPassword(encryptedPassword);
         credential.setKey(key);
-        credential.setUserid(userid);
 
         int credentialId = 0;
 
@@ -56,10 +56,10 @@ public class CredentialsService {
         int userid = userService.getUser(userName).getUserid();
         List<Credential> credentialList = credentialsMapper.getCredentialsByUserId(userid);
         for(Credential credential : credentialList) {
-            String decryptedPassword = encryptionService
-                    .decryptValue(credential.getPassword(), credential.getKey());
+            String encryptedPassword = encryptionService
+                    .encryptValue(credential.getPassword(), credential.getKey());
 
-            credential.setPassword(decryptedPassword);
+            credential.setPassword(encryptedPassword);
 
         }
         return credentialList;
