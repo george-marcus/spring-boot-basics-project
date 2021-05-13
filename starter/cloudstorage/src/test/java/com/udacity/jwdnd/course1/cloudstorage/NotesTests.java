@@ -27,8 +27,8 @@ class NotesTests {
 
 	private WebDriver driver;
 
-	private static final String username = "username";
-	private static final String password = "password";
+	private static final String username = "username-notes";
+	private static final String password = "password-notes";
 
 	private static final String title = "Title";
 	private static final String description = "description";
@@ -43,19 +43,13 @@ class NotesTests {
 		driver = new ChromeDriver();
 		baseURL = "http://localhost:" + port;
 
-		driver.get(baseURL + "/login");
+		driver.get(baseURL + "/signup");
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.signup("George", "Marcus", username, password);
+
 		LoginPage loginPage = new LoginPage(driver);
 		loginPage.login(username, password);
-
-		Thread.sleep(1000);
-
-		if(loginPage.hasErrorLoggingIn()){
-
-			driver.get(baseURL + "/signup");
-			SignupPage signupPage = new SignupPage(driver);
-			signupPage.signup("George", "Marcus", username, password);
-			loginPage.login(username, password);
-		}
+		loginPage.login(username, password);
 	}
 
 	@AfterEach
@@ -66,7 +60,7 @@ class NotesTests {
 	}
 
 	@Test
-	public void createNote() throws InterruptedException {
+	public void noteOperations() throws InterruptedException {
 		NotesTab notesTab = new NotesTab(driver);
 
 		notesTab.showNotes();
@@ -76,42 +70,23 @@ class NotesTests {
 
 		int noteSize = notesTab.getNoteListSize();
 		assertEquals(1, noteSize);
-	}
 
-	@Test
-	public void editNote() throws InterruptedException {
 		String newTitle = "New Title";
 		String newDescription = "New Description";
-
-		NotesTab notesTab = new NotesTab(driver);
-		notesTab.showNotes();
-		notesTab.newNote(title, description);
-
-		Thread.sleep(1000);
 
 		assertTrue(notesTab.editNote(0, newTitle, newDescription));
 
 		Thread.sleep(1000);
 
-		int noteSize = notesTab.getNoteListSize();
+		noteSize = notesTab.getNoteListSize();
 		assertEquals(1, noteSize);
-	}
-
-	@Test
-	public void deleteNote() throws InterruptedException {
-		NotesTab notesTab = new NotesTab(driver);
-		notesTab.showNotes();
-		notesTab.newNote(title, description);
-
-		Thread.sleep(1000);
 
 		assertTrue(notesTab.deleteNote(0));
 
 		Thread.sleep(1000);
 
-		int noteSize = notesTab.getNoteListSize();
+		noteSize = notesTab.getNoteListSize();
 		assertEquals(0, noteSize);
-
 
 	}
 }

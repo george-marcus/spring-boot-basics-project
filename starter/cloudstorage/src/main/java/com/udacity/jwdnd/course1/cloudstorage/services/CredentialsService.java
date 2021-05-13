@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.services;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialsMapper;
@@ -56,11 +55,11 @@ public class CredentialsService {
         int userid = userService.getUser(userName).getUserid();
         List<Credential> credentialList = credentialsMapper.getCredentialsByUserId(userid);
         for(Credential credential : credentialList) {
-            String encryptedPassword = encryptionService
-                    .encryptValue(credential.getPassword(), credential.getKey());
 
-            credential.setPassword(encryptedPassword);
+            String decryptedPassword = encryptionService
+                    .decryptValue(credential.getPassword(), credential.getKey());
 
+            credential.setDecryptedPassword(decryptedPassword);
         }
         return credentialList;
     }

@@ -51,9 +51,16 @@ public class CredentialsTab {
     private List<WebElement> credentialPassword;
 
     private final JavascriptExecutor javascriptExecutor;
+    private final WebDriverWait wait;
 
     public CredentialsTab(final WebDriver driver) {
+        this.wait = new WebDriverWait(driver, 1000);
+
+        wait.until(ExpectedConditions
+                .presenceOfElementLocated(By.id("nav-credentials-tab")));
+
         this.javascriptExecutor = (JavascriptExecutor)driver;
+
         PageFactory.initElements(driver, this);
     }
 
@@ -62,26 +69,22 @@ public class CredentialsTab {
                 .executeScript("arguments[0].click();", credentialsTabLink);
     }
 
-    public void newCredential(String url, String username, String password) throws InterruptedException {
-
+    public void newCredential(String url, String username, String password) {
         javascriptExecutor
                 .executeScript("arguments[0].click();", addCredentialButton);
-
-        Thread.sleep(500);
 
         populateCredential(url, username, password);
 
     }
 
-    public boolean editCredential(int index, String newUrl, String newUsername, String newPassword) throws InterruptedException {
+    public boolean editCredential(int index, String newUrl, String newUsername, String newPassword) {
+
         if(editCredentialButton.size() <= index){
             return false;
         }
 
         javascriptExecutor
                 .executeScript("arguments[0].click();", editCredentialButton.get(index));
-
-        Thread.sleep(500);
 
         populateCredential(newUrl, newUsername, newPassword);
 
@@ -107,6 +110,9 @@ public class CredentialsTab {
     }
 
     private void populateCredential(String url, String username, String password) {
+
+        saveCredentialButton = wait.until(ExpectedConditions
+                                    .elementToBeClickable(saveCredentialButton));
 
         urlInput.clear();
         urlInput.sendKeys(url);

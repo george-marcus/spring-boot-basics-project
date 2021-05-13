@@ -45,9 +45,16 @@ public class NotesTab {
     private List<WebElement> noteDescription;
 
     private final JavascriptExecutor javascriptExecutor;
+    private final WebDriverWait wait;
 
     public NotesTab(final WebDriver driver) {
+        this.wait = new WebDriverWait(driver, 1000);
+
+        wait.until(ExpectedConditions
+                .presenceOfElementLocated(By.id("nav-notes-tab")));
+
         this.javascriptExecutor = (JavascriptExecutor)driver;
+
         PageFactory.initElements(driver, this);
     }
 
@@ -56,16 +63,14 @@ public class NotesTab {
                 .executeScript("arguments[0].click();", notesTabLink);
     }
 
-    public void newNote(String title, String description) throws InterruptedException {
+    public void newNote(String title, String description) {
         javascriptExecutor
                 .executeScript("arguments[0].click();", addNoteButton);
-
-        Thread.sleep(500);
 
         populateNote(title, description);
     }
 
-    public boolean editNote(int index, String newTitle, String newDescription) throws InterruptedException {
+    public boolean editNote(int index, String newTitle, String newDescription) {
 
         if(noteEdit.size() <= index){
             return false;
@@ -73,8 +78,6 @@ public class NotesTab {
 
         javascriptExecutor
                 .executeScript("arguments[0].click();", noteEdit.get(index));
-
-        Thread.sleep(500);
 
         populateNote(newTitle, newDescription);
 
@@ -97,6 +100,9 @@ public class NotesTab {
     }
 
     private void populateNote(String title, String description) {
+        noteSubmitButton = wait.until(ExpectedConditions
+                                 .elementToBeClickable(noteSubmitButton));
+
         titleInput.clear();
         titleInput.sendKeys(title);
 

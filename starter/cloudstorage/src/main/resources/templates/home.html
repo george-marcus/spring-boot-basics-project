@@ -201,7 +201,7 @@
                                         <button type="button" class="btn btn-success" id="edit-credential"
                                                 th:attr="data-id=${credential.credentialId},
                                                          data-username=${credential.username},
-                                                         data-password=${credential.password},
+                                                         data-password=${credential.decryptedPassword},
                                                          data-url=${credential.url}"
                                                 th:onclick="showCredentialModal(this.getAttribute('data-id'),
                                                                                 this.getAttribute('data-url'),

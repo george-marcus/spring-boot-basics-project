@@ -7,8 +7,8 @@ public class Credential {
     private String key;
     private String password;
     private Integer userid;
+    private String decryptedPassword;
 
-    public  Credential(){}
 
     public Credential(Integer credentialId, String url, String username, String key, String password, Integer userid) {
         this.credentialId = credentialId;
@@ -67,14 +67,11 @@ public class Credential {
         this.userid = userid;
     }
 
-    public Credential populateCredential(Credential otherCredential){
-        credentialId = otherCredential.credentialId;
-        url = otherCredential.url;
-        username = otherCredential.username;
-        key = otherCredential.key;
-        password = otherCredential.password;
-        userid = otherCredential.userid;
+    public String getDecryptedPassword() {
+        return decryptedPassword;
+    }
 
-        return this;
+    public void setDecryptedPassword(String decryptedPassword) {
+        this.decryptedPassword = decryptedPassword;
     }
 }

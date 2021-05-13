@@ -28,8 +28,8 @@ class CredentialsTests {
 	private WebDriver driver;
 
 	private static final String url = "url";
-	private static final String username = "username";
-	private static final String password = "password";
+	private static final String username = "username-credential";
+	private static final String password = "password-credential";
 
 
 	@BeforeAll
@@ -42,19 +42,13 @@ class CredentialsTests {
 		driver = new ChromeDriver();
 		baseURL = "http://localhost:" + port;
 
-		driver.get(baseURL + "/login");
+		driver.get(baseURL + "/signup");
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.signup("George", "Marcus", username, password);
+
 		LoginPage loginPage = new LoginPage(driver);
 		loginPage.login(username, password);
-
-		Thread.sleep(1000);
-
-		if(loginPage.hasErrorLoggingIn()){
-
-			driver.get(baseURL + "/signup");
-			SignupPage signupPage = new SignupPage(driver);
-			signupPage.signup("George", "Marcus", username, password);
-			loginPage.login(username, password);
-		}
+		loginPage.login(username, password);
 	}
 
 	@AfterEach
@@ -65,49 +59,35 @@ class CredentialsTests {
 	}
 
 	@Test
-	public void createCredential() throws InterruptedException {
+	public void credentialOperations() throws InterruptedException {
 		CredentialsTab credentialsTab = new CredentialsTab(driver);
 
 		credentialsTab.showCredentials();
-		credentialsTab.newCredential(url, username, password);
 
 		Thread.sleep(1000);
 
-		int credentials = credentialsTab.getCredentialListSize();
-		assertEquals(1, credentials);
-	}
+		credentialsTab.newCredential(url, username, password);
 
-	@Test
-	public void editCredential() throws InterruptedException {
+		int credentialListSize = credentialsTab.getCredentialListSize();
+		assertEquals(1, credentialListSize);
+
+		Thread.sleep(1000);
+
 		String newUrl = "new url";
 		String newUsername = "new username";
 		String newPassword = "new password";
 
-		CredentialsTab credentialsTab = new CredentialsTab(driver);
-		credentialsTab.showCredentials();
-		credentialsTab.newCredential(url, username, password);
-
-		Thread.sleep(1000);
-
 		assertTrue(credentialsTab.editCredential(0, newUrl, newUsername, newPassword));
 
-		Thread.sleep(1000);
-
-		int credentials = credentialsTab.getCredentialListSize();
-		assertEquals(1, credentials);
-	}
-
-	@Test
-	public void deleteCredential() throws InterruptedException {
-		CredentialsTab credentialsTab = new CredentialsTab(driver);
-		credentialsTab.showCredentials();
-		credentialsTab.newCredential(url, username, password);
+		credentialListSize = credentialsTab.getCredentialListSize();
+		assertEquals(1, credentialListSize);
 
 		Thread.sleep(1000);
+
 		assertTrue(credentialsTab.deleteCredential(0));
 
-		Thread.sleep(1000);
 		int credentials = credentialsTab.getCredentialListSize();
 		assertEquals(0, credentials);
+
 	}
 }

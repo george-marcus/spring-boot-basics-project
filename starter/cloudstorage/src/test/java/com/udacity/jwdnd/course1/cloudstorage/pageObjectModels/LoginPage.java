@@ -1,9 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.pageObjectModels;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -24,20 +21,19 @@ public class LoginPage {
     private WebElement loginError;
 
     private final WebDriverWait wait;
+    private final JavascriptExecutor javascriptExecutor;
 
     public LoginPage(final WebDriver driver) {
-        this.wait = new WebDriverWait(driver, 60);
-
-        wait.until(ExpectedConditions
-                .presenceOfElementLocated(By.id("submit-button")));
+        this.wait = new WebDriverWait(driver, 1000);
+        this.javascriptExecutor = (JavascriptExecutor)driver;
 
         PageFactory.initElements(driver, this);
     }
 
     public void login(final String username, final String password) {
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(submitButton));
+        submitButton = wait.until(ExpectedConditions
+                                .elementToBeClickable(submitButton));
 
         this.usernameInput.clear();
         this.usernameInput.sendKeys(username);
@@ -45,14 +41,7 @@ public class LoginPage {
         this.passwordInput.clear();
         this.passwordInput.sendKeys(password);
 
-        submitButton.click();
-    }
-
-    public Boolean hasErrorLoggingIn(){
-
-        wait.until(ExpectedConditions
-                .elementToBeClickable(loginError));
-
-        return loginError.isDisplayed();
+        javascriptExecutor
+                .executeScript("arguments[0].click();", submitButton);
     }
 }

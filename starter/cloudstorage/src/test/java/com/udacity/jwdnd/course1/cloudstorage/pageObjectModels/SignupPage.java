@@ -40,8 +40,9 @@ public class SignupPage {
     }
 
     public void signup(final String firstName, final String lastName, final String username, final String password) {
-        wait.until(ExpectedConditions
-                .elementToBeClickable(submitButton));
+
+        submitButton = wait.until(ExpectedConditions
+                                .elementToBeClickable(submitButton));
 
         this.firstName.clear();
         this.firstName.sendKeys(firstName);
